@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import './App.css'
 
 function App() {
@@ -8,54 +8,68 @@ function App() {
   const entryRef = useRef(null)
   const snappingRef = useRef(false)
   const hasSnappedRef = useRef(hasSnappedFromHero)
+  const lastScrollYRef = useRef(0)
 
   useEffect(() => {
     hasSnappedRef.current = hasSnappedFromHero
   }, [hasSnappedFromHero])
 
+  const snapToEntry = useCallback(() => {
+    if (snappingRef.current) return
+    snappingRef.current = true
+    const target = entryRef.current
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    }
+    setHasSnappedFromHero(true)
+    setTimeout(() => {
+      snappingRef.current = false
+    }, 600)
+  }, [])
+
+  const snapToHero = useCallback(() => {
+    if (snappingRef.current) return
+    snappingRef.current = true
+    const target = heroRef.current
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    } else {
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+    setTimeout(() => {
+      snappingRef.current = false
+    }, 600)
+  }, [])
+
   useEffect(() => {
     const handleScroll = () => {
+      const currentY = window.scrollY
       const trigger = window.innerHeight * 0.1
-      setIsHeroPassed(window.scrollY > trigger)
+      setIsHeroPassed(currentY > trigger)
 
-      if (window.scrollY < 4) {
+      if (currentY < 4) {
         setHasSnappedFromHero(false)
       }
+
+      const lastY = lastScrollYRef.current
+      const isScrollingUp = currentY < lastY
+      const hero = heroRef.current
+      if (isScrollingUp && hero && !snappingRef.current) {
+        const heroBottom = hero.getBoundingClientRect().bottom
+        if (heroBottom >= -window.innerHeight * 0.15 && heroBottom <= 24) {
+          snapToHero()
+        }
+      }
+
+      lastScrollYRef.current = currentY
     }
 
     handleScroll()
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
-  }, [])
+  }, [snapToHero])
 
   useEffect(() => {
-    const snapToEntry = () => {
-      if (snappingRef.current) return
-      snappingRef.current = true
-      const target = entryRef.current
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      }
-      setHasSnappedFromHero(true)
-      setTimeout(() => {
-        snappingRef.current = false
-      }, 600)
-    }
-
-    const snapToHero = () => {
-      if (snappingRef.current) return
-      snappingRef.current = true
-      const target = heroRef.current
-      if (target) {
-        target.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      } else {
-        window.scrollTo({ top: 0, behavior: 'smooth' })
-      }
-      setTimeout(() => {
-        snappingRef.current = false
-      }, 600)
-    }
-
     const shouldInterceptDown = () => {
       if (snappingRef.current || hasSnappedRef.current) return false
       const hero = heroRef.current
@@ -141,7 +155,7 @@ function App() {
       window.removeEventListener('touchmove', handleTouchMove)
       window.removeEventListener('touchend', handleTouchEnd)
     }
-  }, [])
+  }, [snapToEntry, snapToHero])
 
   const menuItems = [
     { href: '#intro', label: '소개' },
@@ -187,6 +201,21 @@ function App() {
   return (
     <div className="app-shell">
       <header className={`nav-shell ${isHeroPassed ? 'nav-shell--solid' : ''}`}>
+        <div
+          className="nav-shell__layer nav-shell__layer--glass"
+          aria-hidden="true"
+        >
+          <span className="nav-shell__grain" />
+          <span className="nav-shell__sheen" />
+        </div>
+        <span
+          className="nav-shell__glow nav-shell__glow--top"
+          aria-hidden="true"
+        />
+        <span
+          className="nav-shell__glow nav-shell__glow--bottom"
+          aria-hidden="true"
+        />
         <nav className="nav">
           <a className="nav__brand" href="#intro">
             PayWONT
