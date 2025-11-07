@@ -149,6 +149,41 @@ function App() {
     { href: '#developers', label: 'Developers' },
   ]
 
+  const footerHighlights = [
+    'High-performance creative commerce experiences for photographers, designers, and agencies.',
+    'Immersive showcase storytelling aligned with PayWONT\'s glassmorphic onboarding.',
+    'Lifecycle support that blends strategy, design, and deployment on BuchiGo infrastructure.',
+  ]
+
+  const footerLinks = [
+    {
+      title: 'Partner with BuchiGo',
+      items: [
+        {
+          label: 'Start a project',
+          href: 'https://www.buchigo.com/contact/',
+        },
+        {
+          label: 'Visit buchigo.com',
+          href: 'https://www.buchigo.com/',
+        },
+      ],
+    },
+    {
+      title: 'Stay in the loop',
+      items: [
+        {
+          label: 'Creative insights',
+          href: 'https://www.buchigo.com/',
+        },
+        {
+          label: 'Support & collaboration',
+          href: 'https://www.buchigo.com/contact/',
+        },
+      ],
+    },
+  ]
+
   return (
     <div className="app-shell">
       <header className={`nav-shell ${isHeroPassed ? 'nav-shell--solid' : ''}`}>
@@ -207,6 +242,66 @@ function App() {
           </div>
         </section>
       </main>
+
+      <footer className="footer">
+        <div className="footer__inner">
+          <div className="footer__grid">
+            <div className="footer__brand">
+              <span className="footer__logo">BuchiGo</span>
+              <p>
+                High-performance creative commerce experiences that power the
+                PayWONT vision. From immersive product storytelling to launch
+                orchestration, BuchiGo helps photographers, designers, and
+                agencies go live with confidence.
+              </p>
+              <a
+                className="footer__cta"
+                href="https://www.buchigo.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Explore buchigo.com
+              </a>
+            </div>
+
+            <div className="footer__col">
+              <h3 className="footer__heading">What we craft</h3>
+              <ul className="footer__list footer__list--bullets">
+                {footerHighlights.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            {footerLinks.map((group) => (
+              <div key={group.title} className="footer__col">
+                <h3 className="footer__heading">{group.title}</h3>
+                <ul className="footer__list">
+                  {group.items.map((item) => (
+                    <li key={item.href}>
+                      <a
+                        href={item.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {item.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+
+          <div className="footer__bottom">
+            <span>
+              &copy; {new Date().getFullYear()} BuchiGo &middot; Crafted for
+              immersive commerce.
+            </span>
+            <span className="footer__madeby">Powered by PayWONT</span>
+          </div>
+        </div>
+      </footer>
     </div>
   )
 }
