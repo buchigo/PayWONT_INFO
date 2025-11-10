@@ -1,4 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
+import * as THREE from 'three'
+import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js'
+import glassModelUrl from './assets/WTglass.glb?url'
 import './App.css'
 
 function App() {
@@ -6,6 +9,7 @@ function App() {
   const [hasSnappedFromHero, setHasSnappedFromHero] = useState(false)
   const heroRef = useRef(null)
   const entryRef = useRef(null)
+  const heroModelRef = useRef(null)
   const snappingRef = useRef(false)
   const hasSnappedRef = useRef(hasSnappedFromHero)
   const lastScrollYRef = useRef(0)
@@ -100,6 +104,133 @@ function App() {
     window.addEventListener('scroll', handleScroll, { passive: true })
     return () => window.removeEventListener('scroll', handleScroll)
   }, [snapToEntry, snapToHero])
+
+  useEffect(() => {
+    const container = heroModelRef.current
+    if (!container) return
+
+    const scene = new THREE.Scene()
+    const renderer = new THREE.WebGLRenderer({
+      antialias: true,
+      alpha: true,
+      powerPreference: 'high-performance',
+    })
+    renderer.setClearColor(0x000000, 0)
+    renderer.outputColorSpace = THREE.SRGBColorSpace
+    container.appendChild(renderer.domElement)
+
+    const camera = new THREE.PerspectiveCamera(
+      32,
+      container.clientWidth / container.clientHeight || 1,
+      0.1,
+      50
+    )
+    camera.position.set(0, 0.15, 3.5)
+
+    const ambient = new THREE.AmbientLight(0xffffff, 1.1)
+    scene.add(ambient)
+
+    const rimLight = new THREE.DirectionalLight(0xcfd9ff, 0.9)
+    rimLight.position.set(-2.5, 2.5, 3)
+    scene.add(rimLight)
+
+    const backLight = new THREE.DirectionalLight(0x4c7dff, 0.7)
+    backLight.position.set(2.5, -1, -2.5)
+    scene.add(backLight)
+
+    const loader = new GLTFLoader()
+    let model = null
+
+    loader.load(
+      glassModelUrl,
+      (gltf) => {
+        model = gltf.scene
+        model.traverse((child) => {
+          if (child.isMesh && child.material) {
+            const applyMaterial = (material) => {
+              material.transparent = true
+              material.opacity =
+                material.opacity && material.opacity < 1
+                  ? material.opacity
+                  : 0.95
+              material.needsUpdate = true
+            }
+
+            if (Array.isArray(child.material)) {
+              child.material.forEach(applyMaterial)
+            } else {
+              applyMaterial(child.material)
+            }
+          }
+        })
+        model.scale.setScalar(1.4)
+        model.rotation.set(0.2, Math.PI / 3, 0)
+        model.position.set(0, -0.3, 0)
+        scene.add(model)
+      },
+      undefined,
+      (error) => {
+        console.error('Failed to load WTglass model', error)
+      }
+    )
+
+    const resizeRenderer = () => {
+      const { clientWidth, clientHeight } = container
+      if (!clientWidth || !clientHeight) return
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+      renderer.setSize(clientWidth, clientHeight, false)
+      camera.aspect = clientWidth / clientHeight
+      camera.updateProjectionMatrix()
+    }
+
+    resizeRenderer()
+
+    let resizeObserver = null
+    if (typeof ResizeObserver !== 'undefined') {
+      resizeObserver = new ResizeObserver(() => resizeRenderer())
+      resizeObserver.observe(container)
+    } else {
+      window.addEventListener('resize', resizeRenderer)
+    }
+
+    const clock = new THREE.Clock()
+    let animationFrameId = null
+
+    const renderScene = () => {
+      animationFrameId = requestAnimationFrame(renderScene)
+      if (model) {
+        const delta = clock.getDelta()
+        model.rotation.y -= delta * 0.6
+      }
+      renderer.render(scene, camera)
+    }
+
+    renderScene()
+
+    return () => {
+      if (animationFrameId) cancelAnimationFrame(animationFrameId)
+      if (resizeObserver) {
+        resizeObserver.disconnect()
+      } else {
+        window.removeEventListener('resize', resizeRenderer)
+      }
+      if (renderer.domElement.parentNode === container) {
+        container.removeChild(renderer.domElement)
+      }
+      scene.traverse((child) => {
+        if (child.isMesh) {
+          child.geometry?.dispose()
+          const { material } = child
+          if (Array.isArray(material)) {
+            material.forEach((mat) => mat?.dispose?.())
+          } else {
+            material?.dispose?.()
+          }
+        }
+      })
+      renderer.dispose()
+    }
+  }, [])
 
   useEffect(() => {
     const shouldInterceptDown = () => {
@@ -277,14 +408,19 @@ function App() {
 
       <main className="page">
         <section id="intro" ref={heroRef} className="panel panel--hero">
-          <div className="panel__content">
+          <div className="hero-layout">
+            <div className="panel__content panel__content--hero">
             <p className="eyebrow">지금은 프롤로그 구간</p>
             <h1 className="headline">Buchigo PayWONT</h1>
             <p className="description">
               페이지로 진입하기 전, PayWONT가 준비한 첫인상을 가득히 담아보세요.
               아래로 스크롤하면 본격적인 이야기가 한 화면씩 펼쳐집니다.
             </p>
-            <span className="scroll-hint">Scroll to explore</span>
+              <span className="scroll-hint">Scroll to explore</span>
+            </div>
+            <div className="hero-visual" aria-hidden="true">
+              <div className="hero-visual__canvas" ref={heroModelRef} />
+            </div>
           </div>
         </section>
 
