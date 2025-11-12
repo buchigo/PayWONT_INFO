@@ -430,7 +430,7 @@ function LandingPage() {
           aria-hidden="true"
         />
         <nav className="nav">
-          <a className="nav__brand" href="#intro">
+          <a className="nav__brand" href={import.meta.env.BASE_URL}>
             PayWONT
           </a>
           <div className="nav__group">
@@ -447,7 +447,7 @@ function LandingPage() {
                 </li>
               ))}
             </ul>
-            <button type="button" className="nav-cta" onClick={handleDeveloperNav}>
+            <button type="button" className="nav-cta" disabled aria-disabled="true">
               다운로드
             </button>
           </div>
