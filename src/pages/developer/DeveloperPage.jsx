@@ -46,7 +46,7 @@ function DeveloperPage() {
             Developer Portal 준비 중
           </button>
           <Link className="developer-ghost" to="/">
-            랜딩으로 돌아가기
+            PayWONT 홈페이지
           </Link>
         </div>
       </header>
