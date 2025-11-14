@@ -1,88 +1,103 @@
-﻿import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom'
+import TopNav from '../../components/topnav/TopNav'
 import './DeveloperPage.css'
 
 const navigationBlocks = [
   {
-    title: 'WONT Agent SDK',
+    id: 'sdk',
+    title: 'WONT \uC5D0\uC774\uC804\uD2B8 SDK',
     description:
-      'PayWONT 월렛과 커스터디 파이프라인을 빠르게 통합할 수 있는 경량 SDK입니다. 모바일/웹 환경에 맞춰 베타 문서를 준비하고 있어요.',
+      '\uC6F9/\uC571\uC5D0\uC11C PayWONT \uC5D0\uC774\uC804\uD2B8 \uD750\uB984\uC744 \uC5F0\uB3D9\uD558\uAE30 \uC704\uD55C \uACF5\uC2DD SDK\uC785\uB2C8\uB2E4.',
   },
   {
-    title: 'Payment API',
+    id: 'payment',
+    title: '\uACB0\uC81C API',
     description:
-      'On/Off-Ramp, Paygate 연동, 가맹점 정산 시나리오에 필요한 API 엔드포인트들을 정리하고 있습니다.',
+      '\uC628/\uC624\uD504\uB7A8\uD504, \uD398\uC774\uAC8C\uC774\uD2B8 \uC5F0\uB3D9, \uACB0\uC81C \uCC98\uB9AC\uC5D0 \uD544\uC694\uD55C API \uC138\uD2B8\uB97C \uC81C\uACF5\uD569\uB2C8\uB2E4.',
   },
   {
-    title: 'Operations Console',
+    id: 'console',
+    title: '\uC6B4\uC601 \uCF58\uC194',
     description:
-      '트랜잭션 모니터링, 잔액 현황, KYC 검증 상태를 한 번에 확인할 수 있는 운영 도구를 시험 중입니다.',
+      '\uAC70\uB798 \uBAA8\uB2C8\uD130\uB9C1, \uC815\uC0B0, KYC \uC0C1\uD0DC\uB97C \uD655\uC778\uD560 \uC218 \uC788\uB294 \uC6B4\uC601 \uCF58\uC194\uC785\uB2C8\uB2E4.',
   },
 ]
 
 const checklist = [
-  '파트너 사전 등록 및 샌드박스 계정 발급',
-  'API 키와 웹훅 시크릿 교부',
-  '테스트넷에서 멀티 체인 송금 시뮬레이션',
-  '정산 주기/한도 등 커스텀 정책 확정',
+  '\uD30C\uD2B8\uB108 \uB4F1\uB85D \uBC0F \uAD00\uB9AC\uC790 \uACC4\uC815 \uBC1C\uAE09',
+  'API \uD0A4 \uBC1C\uAE09 \uBC0F \uD14C\uC2A4\uD2B8/\uC6B4\uC601 \uBD84\uB9AC',
+  '\uD14C\uC2A4\uD2B8 \uD658\uACBD \uC5F0\uB3D9 \uBC0F \uC2DC\uB098\uB9AC\uC624 \uAC80\uC99D',
+  '\uC815\uC0B0 \uC8FC\uAE30/\uC138\uAE08 \uBC0F \uACC4\uC57D \uC815\uCC45 \uD655\uC778',
 ]
 
 const contactOptions = [
-  { label: '파트너 문의', href: 'https://www.buchigo.com/contact/' },
-  { label: '기술 지원 메일', href: 'mailto:dev@buchigo.com' },
+  { label: '\uD30C\uD2B8\uB108 \uBB38\uC758', href: 'https://www.buchigo.com/contact/' },
+  { label: '\uC774\uBA54\uC77C \uBB38\uC758', href: 'mailto:dev@buchigo.com' },
 ]
 
 function DeveloperPage() {
   return (
-    <div className="developer-page">
-      <header className="developer-hero">
-        <p className="developer-hero__eyebrow">Developer Preview</p>
-        <h1>PayWONT Developer</h1>
-        <p>
-          통합 테스트와 운영 정책 정리를 위한 개발자 포털을 준비 중입니다. SDK, API, 운영 도구가
-          업데이트되면 가장 먼저 전달드릴게요.
-        </p>
-        <div className="developer-hero__actions">
-          <button type="button" className="developer-cta" disabled>
-            Developer Portal 준비 중
-          </button>
-          <Link className="developer-ghost" to="/">
-            PayWONT 홈페이지
-          </Link>
-        </div>
-      </header>
+    <>
+      <TopNav />
+      <div className="developer-page">
+        <div className="developer-layout">
+          <div className="developer-main">
+            <header id="intro" className="developer-hero">
+              <p className="developer-hero__eyebrow">Developer Preview</p>
+              <h1>PayWONT Developer</h1>
+            <p>
+              {'\uD604\uC7AC \uD14C\uC2A4\uD2B8\uC640 \uC6B4\uC601 \uC815\uCC45 \uAC80\uC99D\uC744 \uC704\uD574 \uC81C\uD55C\uC801\uC73C\uB85C \uC811\uADFC\uC744 \uC81C\uACF5\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4. SDK, API, \uC6B4\uC601 \uCF58\uC194\uC744 \uC21C\uCC28\uC801\uC73C\uB85C \uACF5\uAC1C\uD560 \uC608\uC815\uC785\uB2C8\uB2E4.'}
+            </p>
+              <div className="developer-hero__actions">
+                <button type="button" className="developer-cta" disabled>
+                  {'Developer Portal '}{'\uC900\uBE44 \uC911'}
+                </button>
+                <Link className="developer-ghost" to="/">
+                  {'\uD648\uC73C\uB85C'}
+                </Link>
+              </div>
+            </header>
 
-      <section className="developer-section">
-        <h2>예정된 구성</h2>
-        <div className="developer-grid">
-          {navigationBlocks.map((block) => (
-            <article key={block.title} className="developer-card">
-              <h3>{block.title}</h3>
-              <p>{block.description}</p>
-            </article>
-          ))}
-        </div>
-      </section>
+            <section id="products" className="developer-section">
+            <h2>{'\uC81C\uD488 \uC548\uB0B4'}</h2>
+              <div className="developer-grid">
+                {navigationBlocks.map((block) => (
+                  <article key={block.title} id={block.id} className="developer-card">
+                    <h3>{block.title}</h3>
+                    <p>{block.description}</p>
+                  </article>
+                ))}
+              </div>
+            </section>
 
-      <section className="developer-section">
-        <h2>시작 체크리스트</h2>
-        <ul className="developer-list">
-          {checklist.map((item) => (
-            <li key={item}>{item}</li>
-          ))}
-        </ul>
-      </section>
+          <section id="checklist" className="developer-section">
+            <h2>{'\uC0AC\uC804 \uCCB4\uD06C\uB9AC\uC2A4\uD2B8'}</h2>
+              <ul className="developer-list">
+                {checklist.map((item) => (
+                  <li key={item}>{item}</li>
+                ))}
+              </ul>
+            </section>
 
-      <section className="developer-section">
-        <h2>연락 채널</h2>
-        <div className="developer-links">
-          {contactOptions.map((option) => (
-            <a key={option.label} href={option.href} target="_blank" rel="noopener noreferrer">
-              {option.label}
-            </a>
-          ))}
+          <section id="contact" className="developer-section">
+            <h2>{'\uBB38\uC758 \uCC44\uB110'}</h2>
+              <div className="developer-links">
+                {contactOptions.map((option) => (
+                  <a
+                    key={option.label}
+                    href={option.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {option.label}
+                  </a>
+                ))}
+              </div>
+            </section>
+          </div>
         </div>
-      </section>
-    </div>
+      </div>
+    </>
   )
 }
 

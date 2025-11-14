@@ -1,4 +1,4 @@
-﻿.developer-page {
+ .developer-page {
   min-height: 100vh;
   padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 6vw, 4.5rem) 4rem;
   background: radial-gradient(circle at 10% 20%, rgba(108, 149, 255, 0.18), transparent 55%),
@@ -8,6 +8,11 @@
   font-family: var(--font-family-sans);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
+}
+
+.developer-layout {
+  max-width: 1080px;
+  margin: 0 auto;
 }
 
 .developer-hero {
@@ -138,3 +143,4 @@
   }
 }
 
+.developer-main { min-width: 0; }
