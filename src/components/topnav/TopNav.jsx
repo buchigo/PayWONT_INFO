@@ -20,11 +20,18 @@ function ChevronDown() {
 
 export default function TopNav() {
   const [scrolled, setScrolled] = useState(false)
+  const [navAlpha, setNavAlpha] = useState(0)
   const [mobileOpen, setMobileOpen] = useState(false)
   const location = useLocation()
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12)
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop || 0
+      const threshold = 120
+      const a = Math.max(0, Math.min(1, y / threshold))
+      setNavAlpha(a)
+      setScrolled(y > 0)
+    }
     onScroll()
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
@@ -47,7 +54,11 @@ export default function TopNav() {
   }, [])
 
   return (
-    <header className="topnav" data-scrolled={scrolled ? 'true' : 'false'}>
+    <header
+      className="topnav"
+      data-scrolled={scrolled ? 'true' : 'false'}
+      style={{ '--nav-bg-alpha': navAlpha }}
+    >
       <div className="topnav__inner">
         <div className="topnav__brand">
           <Link className="topnav__brand-link" to="/developer">{'PayWONT ' + '\uAC1C\uBC1C\uC790'}</Link>

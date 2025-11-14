@@ -1,4 +1,6 @@
 import { Link } from 'react-router-dom'
+import { useEffect, useRef } from 'react'
+import chainVid from '../../assets/Chain_vid.mp4'
 import TopNav from '../../components/topnav/TopNav'
 import './DeveloperPage.css'
 
@@ -36,14 +38,46 @@ const contactOptions = [
 ]
 
 function DeveloperPage() {
+  const videoRef = useRef(null)
+  useEffect(() => {
+    const vid = videoRef.current
+    if (!vid) return
+    const setRate = () => {
+      try {
+        vid.playbackRate = 1.5
+      } catch (e) {
+        // no-op
+      }
+    }
+    setRate()
+    vid.addEventListener('loadedmetadata', setRate)
+    vid.addEventListener('play', setRate)
+    return () => {
+      vid.removeEventListener('loadedmetadata', setRate)
+      vid.removeEventListener('play', setRate)
+    }
+  }, [])
   return (
     <>
       <TopNav />
       <div className="developer-page">
+        <div className="developer-bg" aria-hidden="true">
+          <video
+            ref={videoRef}
+            className="developer-bg__video"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="auto"
+          >
+            <source src={chainVid} type="video/mp4" />
+          </video>
+        </div>
+        <div className="developer-overlay" aria-hidden="true" />
         <div className="developer-layout">
           <div className="developer-main">
             <header id="intro" className="developer-hero">
-              <p className="developer-hero__eyebrow">Developer Preview</p>
               <h1>PayWONT Developer</h1>
             <p>
               {'\uD604\uC7AC \uD14C\uC2A4\uD2B8\uC640 \uC6B4\uC601 \uC815\uCC45 \uAC80\uC99D\uC744 \uC704\uD574 \uC81C\uD55C\uC801\uC73C\uB85C \uC811\uADFC\uC744 \uC81C\uACF5\uD558\uACE0 \uC788\uC2B5\uB2C8\uB2E4. SDK, API, \uC6B4\uC601 \uCF58\uC194\uC744 \uC21C\uCC28\uC801\uC73C\uB85C \uACF5\uAC1C\uD560 \uC608\uC815\uC785\uB2C8\uB2E4.'}

@@ -1,23 +1,26 @@
- .developer-page {
+.developer-page {
   min-height: 100vh;
-  padding: clamp(2.5rem, 5vw, 4.5rem) clamp(1.5rem, 6vw, 4.5rem) 4rem;
-  background: radial-gradient(circle at 10% 20%, rgba(108, 149, 255, 0.18), transparent 55%),
-    radial-gradient(circle at 90% 0%, rgba(255, 255, 255, 0.08), transparent 50%),
-    #050720;
+  padding: 0 clamp(1.5rem, 6vw, 4.5rem) 4rem;
+  background: transparent;
   color: #f5f7ff;
   font-family: var(--font-family-sans);
   font-size: var(--font-size-base);
   line-height: var(--line-height-base);
+  position: relative;
+  z-index: 1; /* sit above background video */
 }
 
 .developer-layout {
   max-width: 1080px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
 }
 
 .developer-hero {
   max-width: 920px;
   margin: 0 auto clamp(3rem, 6vw, 4rem);
+  padding-top: clamp(48px, 18vh, 240px);
   text-align: center;
 }
 
@@ -29,7 +32,7 @@
 }
 
 .developer-hero h1 {
-  font-size: var(--font-size-h1);
+  font-size: 48px;
   margin-bottom: 1rem;
   line-height: var(--line-height-tight);
 }
@@ -37,9 +40,9 @@
 .developer-hero p {
   max-width: 720px;
   margin: 0 auto 1.5rem;
-  font-size: var(--font-size-lead);
+  font-size: 24px;
   line-height: var(--line-height-relaxed);
-  color: rgba(245, 247, 255, 0.86);
+  color: #F8F8FF99;
 }
 
 .developer-hero__actions {
@@ -144,3 +147,48 @@
 }
 
 .developer-main { min-width: 0; }
+
+/* Background video */
+.developer-bg {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translateX(-50%);
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+  background: #050720; /* fallback while video loads */
+}
+
+.developer-bg__video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Mask overlay above video, below content */
+.developer-overlay {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  width: 100vw;
+  height: 100vh;
+  transform: translateX(-50%);
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 7, 32, 0.78) 0%,
+    rgba(5, 7, 32, 0.78) 45%,
+    rgba(5, 7, 32, 0.80) 50%,
+    rgba(5, 7, 32, 0.82) 55%,
+    rgba(5, 7, 32, 0.85) 60%,
+    rgba(5, 7, 32, 0.89) 67%,
+    rgba(5, 7, 32, 0.92) 69%,
+    rgba(5, 7, 32, 0.95) 72%,
+    rgba(5, 7, 32, 0.99) 90%,
+    rgba(5, 7, 32, 1.00) 100%
+  );
+  pointer-events: none;
+  z-index: 0;
+}
