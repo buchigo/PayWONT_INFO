@@ -61,7 +61,7 @@ export default function TopNav() {
     >
       <div className="topnav__inner">
         <div className="topnav__brand">
-          <Link className="topnav__brand-link" to="/developer">{'PayWONT ' + '\uAC1C\uBC1C\uC790'}</Link>
+          <Link className="topnav__brand-link" to="/developer">{'PayWONT Developer'}</Link>
         </div>
 
         <nav className="topnav__nav" aria-label={'\uC8FC\uC694 \uBA54\uB274'}>

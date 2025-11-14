@@ -1,5 +1,4 @@
 import { Link } from 'react-router-dom'
-import { useEffect, useRef } from 'react'
 import chainVid from '../../assets/Chain_vid.mp4'
 import TopNav from '../../components/topnav/TopNav'
 import './DeveloperPage.css'
@@ -38,38 +37,20 @@ const contactOptions = [
 ]
 
 function DeveloperPage() {
-  const videoRef = useRef(null)
-  useEffect(() => {
-    const vid = videoRef.current
-    if (!vid) return
-    const setRate = () => {
-      try {
-        vid.playbackRate = 1.5
-      } catch (e) {
-        // no-op
-      }
-    }
-    setRate()
-    vid.addEventListener('loadedmetadata', setRate)
-    vid.addEventListener('play', setRate)
-    return () => {
-      vid.removeEventListener('loadedmetadata', setRate)
-      vid.removeEventListener('play', setRate)
-    }
-  }, [])
   return (
     <>
       <TopNav />
       <div className="developer-page">
         <div className="developer-bg" aria-hidden="true">
           <video
-            ref={videoRef}
             className="developer-bg__video"
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
+            onLoadedMetadata={(e) => { try { e.currentTarget.playbackRate = 0.8 } catch (_) {} }}
+            onPlay={(e) => { try { e.currentTarget.playbackRate = 0.8 } catch (_) {} }}
           >
             <source src={chainVid} type="video/mp4" />
           </video>
