@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { useState, useEffect, useRef } from 'react'
 import { useTheme } from '../../contexts/ThemeContext'
 import chainVidDark from '../../assets/Chain_vid_dark.mp4'
 import chainVidLight from '../../assets/Chain_vid_light.mp4'
@@ -40,7 +41,24 @@ const contactOptions = [
 
 function DeveloperPage() {
   const { isDarkMode } = useTheme()
-  const chainVid = isDarkMode ? chainVidDark : chainVidLight
+  const [currentVideo, setCurrentVideo] = useState(chainVidDark)
+  const [isTransitioning, setIsTransitioning] = useState(false)
+  const videoRef = useRef(null)
+
+  useEffect(() => {
+    const newVideo = chainVidDark // 항상 dark 비디오 사용
+
+    if (currentVideo !== newVideo) {
+      // 페이드 아웃 시작
+      setIsTransitioning(true)
+
+      // 500ms 후 비디오 변경 및 페이드 인
+      setTimeout(() => {
+        setCurrentVideo(newVideo)
+        setIsTransitioning(false)
+      }, 500)
+    }
+  }, [isDarkMode, currentVideo])
 
   return (
     <>
@@ -48,16 +66,18 @@ function DeveloperPage() {
       <div className="developer-page">
         <div className="developer-bg" aria-hidden="true">
           <video
-            className="developer-bg__video"
+            ref={videoRef}
+            className={`developer-bg__video ${isTransitioning ? 'fade-out' : ''}`}
             autoPlay
             muted
             loop
             playsInline
             preload="auto"
+            key={currentVideo}
             onLoadedMetadata={(e) => { try { e.currentTarget.playbackRate = 0.8 } catch (_) {} }}
             onPlay={(e) => { try { e.currentTarget.playbackRate = 0.8 } catch (_) {} }}
           >
-            <source src={chainVid} type="video/mp4" />
+            <source src={currentVideo} type="video/mp4" />
           </video>
         </div>
         <div className="developer-overlay" aria-hidden="true" />
