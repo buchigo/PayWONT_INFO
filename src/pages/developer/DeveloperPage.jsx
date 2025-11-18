@@ -1,5 +1,7 @@
 import { Link } from 'react-router-dom'
-import chainVid from '../../assets/Chain_vid.mp4'
+import { useState, useEffect } from 'react'
+import chainVidDark from '../../assets/Chain_vid_dark.mp4'
+import chainVidLight from '../../assets/Chain_vid_light.mp4'
 import TopNav from '../../components/topnav/TopNav'
 import './DeveloperPage.css'
 
@@ -37,6 +39,21 @@ const contactOptions = [
 ]
 
 function DeveloperPage() {
+  // 다크 모드 감지
+  const [isDarkMode, setIsDarkMode] = useState(
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  )
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+    const handleChange = (e) => setIsDarkMode(e.matches)
+
+    mediaQuery.addEventListener('change', handleChange)
+    return () => mediaQuery.removeEventListener('change', handleChange)
+  }, [])
+
+  const chainVid = isDarkMode ? chainVidDark : chainVidLight
+
   return (
     <>
       <TopNav />

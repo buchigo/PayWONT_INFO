@@ -75,7 +75,7 @@ export default function TopNav() {
               </span>
               <div className="topnav__menu" role="menu">
                 <a href="#sdk" className="topnav__menu-item" onClick={(e) => smoothAnchor(e, '#sdk')}>{'WONT ' + '\uC5D0\uC774\uC804\uD2B8'} SDK</a>
-                <a href="#payment" className="topnav__menu-item" onClick={(e) => smoothAnchor(e, '#payment')}>{'\uACB0\uC81C'} API</a>
+                <Link to="/developer/payment-api" className="topnav__menu-item">{'\uACB0\uC81C'} API</Link>
                 <a href="#console" className="topnav__menu-item" onClick={(e) => smoothAnchor(e, '#console')}>{'\uC6B4\uC601 ' + '\uCF58\uC194'}</a>
               </div>
             </li>
@@ -99,7 +99,7 @@ export default function TopNav() {
           <div className="topnav__mobile-group">
             <div className="topnav__mobile-label">{'\uC81C\uD488'}</div>
             <a href="#sdk" onClick={(e) => smoothAnchor(e, '#sdk')}>WONT Agent SDK</a>
-            <a href="#payment" onClick={(e) => smoothAnchor(e, '#payment')}>Payment API</a>
+            <Link to="/developer/payment-api">Payment API</Link>
             <a href="#console" onClick={(e) => smoothAnchor(e, '#console')}>Operations Console</a>
           </div>
           <a href="#checklist" onClick={(e) => smoothAnchor(e, '#checklist')}>{'\uCCB4\uD06C\uB9AC\uC2A4\uD2B8'}</a>
