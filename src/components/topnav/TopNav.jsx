@@ -81,6 +81,22 @@ export default function TopNav() {
     setMobileOpen(false)
   }, [])
 
+  const handleComingSoon = useCallback((e) => {
+    e.preventDefault()
+    alert('현재 준비중입니다.')
+    setMobileOpen(false)
+  }, [])
+
+  const handleDeveloperClick = useCallback((e) => {
+    // 현재 /developer 페이지에 있으면 최상단으로 스크롤
+    if (location.pathname === '/developer') {
+      e.preventDefault()
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+      setMobileOpen(false)
+    }
+    // 다른 페이지에 있으면 정상적으로 링크 이동 (preventDefault 하지 않음)
+  }, [location.pathname])
+
   return (
     <header
       className="topnav"
@@ -89,23 +105,23 @@ export default function TopNav() {
     >
       <div className="topnav__inner">
         <div className="topnav__brand">
-          <Link className="topnav__brand-link" to="/developer">{'PayWONT Developer'}</Link>
+          <Link className="topnav__brand-link" to="/developer" onClick={handleDeveloperClick}>{'PayWONT Developer'}</Link>
         </div>
 
         <div className="topnav__right">
           <nav className="topnav__nav" aria-label={'\uC8FC\uC694 \uBA54\uB274'}>
             <ul className="topnav__list">
               <li className="topnav__item">
-                <a href="#intro" className="topnav__link" onClick={(e) => smoothAnchor(e, '#intro')}>{'\uC18C\uAC1C'}</a>
+                <Link to="/developer" className="topnav__link" onClick={handleDeveloperClick}>{'\uC18C\uAC1C'}</Link>
               </li>
               <li className="topnav__item topnav__item--has-menu">
                 <span className="topnav__link" role="button" tabIndex={0} aria-haspopup="true" aria-expanded="false">
-                  {'\uC81C\uD488'} <ChevronDown />
+                  API & SDK <ChevronDown />
                 </span>
                 <div className="topnav__menu" role="menu">
-                  <a href="#sdk" className="topnav__menu-item" onClick={(e) => smoothAnchor(e, '#sdk')}>{'WONT ' + '\uC5D0\uC774\uC804\uD2B8'} SDK</a>
-                  <Link to="/developer/payment-api" className="topnav__menu-item">{'\uACB0\uC81C'} API</Link>
-                  <a href="#console" className="topnav__menu-item" onClick={(e) => smoothAnchor(e, '#console')}>{'\uC6B4\uC601 ' + '\uCF58\uC194'}</a>
+                  <Link to="/developer/payment-api" className="topnav__menu-item">API 가이드</Link>
+                  <a href="#sdk" className="topnav__menu-item" onClick={handleComingSoon}>SDK 가이드</a>
+                  <a href="#console" className="topnav__menu-item" onClick={handleComingSoon}>{'\uC6B4\uC601 ' + '\uCF58\uC194'}</a>
                 </div>
               </li>
               <li className="topnav__item">
@@ -153,12 +169,12 @@ export default function TopNav() {
 
       <div className="topnav__mobile" data-open={mobileOpen ? 'true' : 'false'}>
         <div className="topnav__mobile-inner">
-          <a href="#intro" onClick={(e) => smoothAnchor(e, '#intro')}>{'\uC18C\uAC1C'}</a>
+          <Link to="/developer" onClick={handleDeveloperClick}>{'\uC18C\uAC1C'}</Link>
           <div className="topnav__mobile-group">
-            <div className="topnav__mobile-label">{'\uC81C\uD488'}</div>
-            <a href="#sdk" onClick={(e) => smoothAnchor(e, '#sdk')}>WONT Agent SDK</a>
-            <Link to="/developer/payment-api">Payment API</Link>
-            <a href="#console" onClick={(e) => smoothAnchor(e, '#console')}>Operations Console</a>
+            <div className="topnav__mobile-label">API & SDK</div>
+            <Link to="/developer/payment-api">API 가이드</Link>
+            <a href="#sdk" onClick={handleComingSoon}>SDK 가이드</a>
+            <a href="#console" onClick={handleComingSoon}>Operations Console</a>
           </div>
           <a href="#checklist" onClick={(e) => smoothAnchor(e, '#checklist')}>{'\uCCB4\uD06C\uB9AC\uC2A4\uD2B8'}</a>
           <a href="#contact" onClick={(e) => smoothAnchor(e, '#contact')}>{'\uBB38\uC758'}</a>

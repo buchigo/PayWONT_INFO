@@ -126,16 +126,33 @@
 }
 
 .topnav__menu-item {
-  display: block;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   padding: 10px 12px;
   border-radius: 10px;
   color: var(--text-secondary);
   text-decoration: none;
   transition: background-color 160ms ease, color 0.3s ease;
+  position: relative;
+}
+
+.topnav__menu-item::after {
+  content: '→';
+  opacity: 0;
+  transform: translateX(-4px);
+  transition: opacity 160ms ease, transform 160ms ease;
+  font-size: 16px;
+  color: currentColor;
 }
 
 .topnav__menu-item:hover {
   background: var(--surface-hover);
+}
+
+.topnav__menu-item:hover::after {
+  opacity: 1;
+  transform: translateX(0);
 }
 
 /* Settings */
@@ -187,13 +204,13 @@
   justify-content: space-between;
   gap: 16px;
   width: 100%;
-  padding: 8px 0;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: background-color 160ms ease;
 }
 
 .topnav__settings-label {
   color: var(--text-secondary);
-  font-size: 14px;
-  font-weight: 500;
   transition: color 0.3s ease;
 }
 
@@ -220,6 +237,10 @@
 
 .topnav__theme-toggle[data-theme="dark"] .topnav__theme-toggle-track {
   background: #4a5fd9;
+}
+
+.topnav__theme-toggle[data-theme="light"] .topnav__theme-toggle-track {
+  background: #d1d5db;
 }
 
 .topnav__theme-toggle-thumb {
