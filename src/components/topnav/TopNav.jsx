@@ -93,8 +93,11 @@ export default function TopNav() {
       e.preventDefault()
       window.scrollTo({ top: 0, behavior: 'smooth' })
       setMobileOpen(false)
+    } else {
+      // 다른 페이지에서 이동할 때는 즉시 스크롤 초기화
+      window.scrollTo(0, 0)
+      setMobileOpen(false)
     }
-    // 다른 페이지에 있으면 정상적으로 링크 이동 (preventDefault 하지 않음)
   }, [location.pathname])
 
   return (

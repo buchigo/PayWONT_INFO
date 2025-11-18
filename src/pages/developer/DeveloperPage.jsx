@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom'
-import { useState, useEffect, useRef } from 'react'
+import { useState, useEffect, useRef, useLayoutEffect } from 'react'
 import { useTheme } from '../../contexts/ThemeContext'
 import chainVidDark from '../../assets/Chain_vid_dark.mp4'
 import chainVidLight from '../../assets/Chain_vid_light.mp4'
@@ -44,6 +44,11 @@ function DeveloperPage() {
   const [currentVideo, setCurrentVideo] = useState(chainVidDark)
   const [isTransitioning, setIsTransitioning] = useState(false)
   const videoRef = useRef(null)
+
+  // 페이지 로드 시 최상단으로 스크롤 (useLayoutEffect 사용하여 렌더링 전 실행)
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
 
   useEffect(() => {
     const newVideo = chainVidDark // 항상 dark 비디오 사용

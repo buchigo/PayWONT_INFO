@@ -1,3 +1,4 @@
+import { useLayoutEffect } from 'react'
 import TopNav from '../../components/topnav/TopNav'
 import './PaymentApiPage.css'
 
@@ -76,6 +77,11 @@ function RightAnchor({ href, label }) {
 }
 
 function PaymentApiPage() {
+  // 페이지 로드 시 최상단으로 스크롤 (useLayoutEffect 사용하여 렌더링 전 실행)
+  useLayoutEffect(() => {
+    window.scrollTo(0, 0)
+  }, [])
+
   return (
     <>
       <TopNav />
