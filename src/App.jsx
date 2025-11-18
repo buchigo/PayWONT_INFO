@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { ThemeProvider } from './contexts/ThemeContext'
 import DeveloperPage from './pages/developer/DeveloperPage'
 import PaymentApiPage from './pages/developer/PaymentApiPage'
 import LandingPage from './pages/landing/LandingPage'
@@ -24,14 +25,16 @@ function App() {
   }, [])
 
   return (
-    <HashRouter>
-      <Routes>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/developer" element={<DeveloperPage />} />
-        <Route path="/developer/payment-api" element={<PaymentApiPage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </HashRouter>
+    <ThemeProvider>
+      <HashRouter>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/developer" element={<DeveloperPage />} />
+          <Route path="/developer/payment-api" element={<PaymentApiPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </HashRouter>
+    </ThemeProvider>
   )
 }
 
