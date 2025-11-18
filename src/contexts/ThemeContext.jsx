@@ -12,10 +12,9 @@ export function ThemeProvider({ children }) {
     return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
   })
 
-  // 테마 변경 시 localStorage에 저장
+  // 테마 변경 시 localStorage에 저장 및 DOM 업데이트
   useEffect(() => {
     localStorage.setItem('theme', theme)
-    // data-theme 속성을 document에 설정하여 CSS에서 사용 가능하도록
     document.documentElement.setAttribute('data-theme', theme)
   }, [theme])
 
