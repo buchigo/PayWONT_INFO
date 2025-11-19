@@ -1,5 +1,6 @@
 ﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import logo from '../../assets/logo_dark.png'
 import './LandingPage.css'
 
 function LandingPage() {
@@ -431,7 +432,9 @@ function LandingPage() {
         />
         <nav className="nav">
           <a className="nav__brand" href={import.meta.env.BASE_URL}>
-            PayWONT
+            <img src={logo} alt="PayWONT Logo" className="nav__brand-logo" />
+            <span className="nav__brand-wont">WONT</span>
+            <span className="nav__brand-pay">Pay</span>
           </a>
           <div className="nav__group">
             <ul className="nav__list">

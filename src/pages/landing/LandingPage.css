@@ -184,9 +184,27 @@
 
 .nav__brand {
   font-size: clamp(1.05rem, 0.9rem + 0.7vw, 1.6rem);
-  text-transform: uppercase;
-  letter-spacing: 0.22em;
+  text-transform: none;
   color: inherit;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.nav__brand-logo {
+  height: clamp(1.6rem, 1.4rem + 1vw, 2.4rem);
+  width: auto;
+  display: block;
+}
+
+.nav__brand-wont {
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-right: -0.1em;
+}
+
+.nav__brand-pay {
+  letter-spacing: 0.05em;
 }
 
 .nav__list {
