@@ -9,7 +9,7 @@ pipeline {
     DOCKER_CREDENTIALS_ID      = "dockerhub_credentials"
     DEPLOY_SSH_CREDENTIALS_ID  = "deploy_ssh"
     DEPLOY_HOST                = "app@192.168.1.11"
-    DEPLOY_DIR                 = "/data/docker/paywont-info"
+    DEPLOY_DIR                 = "/data/docker/"
     SERVICE_NAME               = "paywont-info"
   }
   stages {
