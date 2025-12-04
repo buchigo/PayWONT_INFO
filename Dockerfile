@@ -27,18 +27,17 @@ COPY <<EOF /etc/nginx/conf.d/default.conf
 server {
     listen 80;
     server_name _;
-
     root /usr/share/nginx/html;
-
-    # 정적 파일 및 SPA 라우팅
+    
+    include /etc/nginx/mime.types;
+    
     location / {
         try_files \$uri \$uri/ /index.html;
     }
-
-    # 정적 리소스 캐싱 예시 (원하면 조정)
+    
     location ~* \.(js|css|png|jpg|jpeg|gif|svg|ico)$ {
         add_header Cache-Control "public, max-age=31536000, immutable";
-        try_files \$uri \$uri/ /index.html;
+        try_files \$uri =404;
     }
 }
 EOF
