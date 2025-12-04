@@ -66,8 +66,8 @@ pipeline {
       steps {
         sshagent (credentials: [DEPLOY_SSH_CREDENTIALS_ID]) {
           sh '''\
-            ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} "mkdir -p ${DEPLOY_DIR}"
-            ssh -o StrictHostKeyChecking=no ${DEPLOY_HOST} "\
+            ssh -p 9722 -o StrictHostKeyChecking=no ${DEPLOY_HOST} "mkdir -p ${DEPLOY_DIR}"
+            ssh -p 9722 -o StrictHostKeyChecking=no ${DEPLOY_HOST} "\
               cd ${DEPLOY_DIR} && \
               docker compose pull ${SERVICE_NAME} && \
               docker compose up -d ${SERVICE_NAME} && \
