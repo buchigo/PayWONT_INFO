@@ -1,5 +1,4 @@
 ﻿import { useCallback, useEffect, useRef, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import logoDark from '../../assets/Dark_WONT.png'
 import logoLight from '../../assets/White_WONT.png'
 import { useTheme } from '../../contexts/ThemeContext'
@@ -16,10 +15,9 @@ function LandingPage() {
   const lastScrollYRef = useRef(0)
 
   const { isDarkMode } = useTheme()
-  const navigate = useNavigate()
   const handleDeveloperNav = useCallback(() => {
-    navigate('/developer')
-  }, [navigate])
+    window.open('https://developers.wont.kr', '_blank', 'noopener,noreferrer')
+  }, [])
 
   useEffect(() => {
     hasSnappedRef.current = hasSnappedFromHero
