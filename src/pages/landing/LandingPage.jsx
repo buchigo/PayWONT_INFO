@@ -1,6 +1,8 @@
 ﻿import { useCallback, useEffect, useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import logo from '../../assets/logo_dark.png'
+import logoDark from '../../assets/Dark_WONT.png'
+import logoLight from '../../assets/White_WONT.png'
+import { useTheme } from '../../contexts/ThemeContext'
 import './LandingPage.css'
 
 function LandingPage() {
@@ -13,6 +15,7 @@ function LandingPage() {
   const hasSnappedRef = useRef(hasSnappedFromHero)
   const lastScrollYRef = useRef(0)
 
+  const { isDarkMode } = useTheme()
   const navigate = useNavigate()
   const handleDeveloperNav = useCallback(() => {
     navigate('/developer')
@@ -432,7 +435,7 @@ function LandingPage() {
         />
         <nav className="nav">
           <a className="nav__brand" href={import.meta.env.BASE_URL}>
-            <img src={logo} alt="PayWONT Logo" className="nav__brand-logo" />
+            <img src={isDarkMode ? logoDark : logoLight} alt="PayWONT Logo" className="nav__brand-logo" />
             <span className="nav__brand-wont">WONT</span>
             <span className="nav__brand-pay">Pay</span>
           </a>
