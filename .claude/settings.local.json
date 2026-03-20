@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git fetch:*)",
+      "Bash(git pull:*)",
+      "Bash(find C:/Users/kmbm0/OneDrive/문서/Buchigo/WONT/PayWONT -type f \\\\\\(-iname *.png -o -iname *.svg -o -iname *.ico -o -iname *.jpg -o -iname *.jpeg \\\\\\))",
+      "Bash(file *.png)",
+      "Bash(find C:/Users/kmbm0/OneDrive/문서/Buchigo/WONT/PayWONT -path */public/img/* -type f \\\\\\(-iname *logo* -o -iname *WONT* \\\\\\))",
+      "Bash(grep -r \"logo\\\\|icon\" --include=*.jsx --include=*.js --include=*.html --include=*.css .)",
+      "Bash(grep -r \"import.*logo\\\\|import.*icon\\\\|src.*logo\\\\|src.*icon\\\\|href.*logo\\\\|href.*icon\" --include=*.jsx --include=*.js --include=*.html .)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}
