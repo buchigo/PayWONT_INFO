@@ -12,7 +12,7 @@ pipeline {
 
     environment {
         SERVICE_NAME              = "paywont-info"
-        APP_PORT                  = "80"
+        APP_PORT                  = "3008"
 
         DOCKER_HUB_ID             = "kimeren0521"
         DOCKER_IMAGE              = "${DOCKER_HUB_ID}/paywont-info"
@@ -81,6 +81,21 @@ pipeline {
                                 docker image prune -f
                             '
                         """
+                    }
+                }
+            }
+        }
+
+        stage('Health Check') {
+            steps {
+                script {
+                    sleep(10)
+                    sshagent(credentials: [DEPLOY_SSH_CREDENTIALS_ID]) {
+                        def status = sh(
+                            script: "ssh -p ${DEPLOY_PORT} -o StrictHostKeyChecking=no ${DEPLOY_HOST} 'curl -sf http://localhost:${APP_PORT}/health || echo UNHEALTHY'",
+                            returnStdout: true
+                        ).trim()
+                        if (status == 'UNHEALTHY') { error("❌ Health check failed!") }
                     }
                 }
             }
