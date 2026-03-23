@@ -1,92 +1,98 @@
 pipeline {
-  agent any
-  options {
-    disableConcurrentBuilds()
-    timestamps()
-  }
-  environment {
-    DOCKER_HUB_ID              = "kimeren0521"
-    DOCKER_CREDENTIALS_ID      = "dockerhub_credentials"
-    DEPLOY_SSH_CREDENTIALS_ID  = "deploy_ssh"
-    DEPLOY_HOST                = "app@192.168.1.11"
-    DEPLOY_DIR                 = "/data/docker/"
-    SERVICE_NAME               = "paywont-info"
-  }
-  stages {
-    stage('Checkout') {
-      steps {
-        checkout scm
-        sh 'git rev-parse --short HEAD || true'
-      }
+    agent any
+
+    options {
+        disableConcurrentBuilds()
+        timestamps()
+        timeout(time: 20, unit: 'MINUTES')
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '5'))
     }
-    stage('NPM Build') {
-      steps {
-        sh """
-          set -e
-          npm ci
-          npm run build
-        """
-      }
+
+    triggers { githubPush() }
+
+    environment {
+        SERVICE_NAME              = "paywont-info"
+        APP_PORT                  = "80"
+
+        DOCKER_HUB_ID             = "kimeren0521"
+        DOCKER_IMAGE              = "${DOCKER_HUB_ID}/paywont-info"
+        DOCKER_CREDENTIALS_ID     = "dockerhub-credentials"
+
+        DEPLOY_SSH_CREDENTIALS_ID = "ssh-credentials"
+        DEPLOY_HOST               = "app@172.17.1.10"
+        DEPLOY_PORT               = "35655"
+        DEPLOY_DIR                = "/data/apps"
     }
-    stage('Build Docker Image') {
-      steps {
-        script {
-          env.IMAGE_TAG    = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
-          env.IMAGE_NAME   = "${env.DOCKER_HUB_ID}/${env.SERVICE_NAME}"
-          echo "IMAGE_NAME=${env.IMAGE_NAME}, IMAGE_TAG=${env.IMAGE_TAG}"
+
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+                script {
+                    env.IMAGE_TAG   = sh(script: "git rev-parse --short HEAD", returnStdout: true).trim()
+                    env.BRANCH_NAME = sh(script: "git rev-parse --abbrev-ref HEAD", returnStdout: true).trim()
+                }
+                echo "🚀 ${SERVICE_NAME} Build - Branch: ${BRANCH_NAME}, Commit: ${IMAGE_TAG}"
+            }
         }
-        sh '''\
-          docker rmi -f ${IMAGE_NAME}:${IMAGE_TAG} ${IMAGE_NAME}:latest || true
-          docker build \
-            -t ${IMAGE_NAME}:${IMAGE_TAG} \
-            -t ${IMAGE_NAME}:latest \
-            .
-        '''
-      }
-    }
-    stage('Push Docker Image') {
-      steps {
-        withCredentials([
-          usernamePassword(
-            credentialsId: "${DOCKER_CREDENTIALS_ID}",
-            usernameVariable: 'DOCKERHUB_USERNAME',
-            passwordVariable: 'DOCKERHUB_PASSWORD'
-          )
-        ]) {
-          sh '''\
-            echo "$DOCKERHUB_PASSWORD" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
-            docker push ${IMAGE_NAME}:${IMAGE_TAG}
-            docker push ${IMAGE_NAME}:latest
-            docker logout || true
-          '''
+
+        stage('Docker Build & Push') {
+            steps {
+                withCredentials([usernamePassword(
+                    credentialsId: "${DOCKER_CREDENTIALS_ID}",
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh """
+                        export DOCKER_CONFIG=\$(mktemp -d)
+                        mkdir -p \$DOCKER_CONFIG/cli-plugins
+                        cp /var/jenkins_home/.docker/cli-plugins/docker-buildx \$DOCKER_CONFIG/cli-plugins/
+                        echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin
+                        DOCKER_BUILDKIT=1 docker build \\
+                            --provenance=false \\
+                            --memory=1.5g \\
+                            --build-arg NODE_ENV=production \\
+                            --build-arg HTTP_PROXY=http://172.16.2.10:3128 \\
+                            --build-arg HTTPS_PROXY=http://172.16.2.10:3128 \\
+                            --build-arg NO_PROXY=localhost,127.0.0.1,172.16.0.0/12 \\
+                            --no-cache \\
+                            -t ${DOCKER_IMAGE}:${IMAGE_TAG} \\
+                            -t ${DOCKER_IMAGE}:latest \\
+                            .
+                        docker push ${DOCKER_IMAGE}:${IMAGE_TAG}
+                        docker push ${DOCKER_IMAGE}:latest
+                        docker logout
+                        rm -rf \$DOCKER_CONFIG
+                    """
+                }
+            }
         }
-      }
-    }
-    stage('Deploy to Remote') {
-      steps {
-        sshagent (credentials: [DEPLOY_SSH_CREDENTIALS_ID]) {
-          sh '''\
-            ssh -p 9722 -o StrictHostKeyChecking=no ${DEPLOY_HOST} "mkdir -p ${DEPLOY_DIR}"
-            ssh -p 9722 -o StrictHostKeyChecking=no ${DEPLOY_HOST} "\
-              cd ${DEPLOY_DIR} && \
-              docker compose pull ${SERVICE_NAME} && \
-              docker compose up -d ${SERVICE_NAME} && \
-              docker system prune -f \
-            "
-          '''
+
+        stage('Deploy') {
+            steps {
+                lock('deploy-web-svr1') {
+                    sshagent(credentials: [DEPLOY_SSH_CREDENTIALS_ID]) {
+                        sh """
+                            ssh -p ${DEPLOY_PORT} -o StrictHostKeyChecking=no ${DEPLOY_HOST} '
+                                cd ${DEPLOY_DIR} &&
+                                docker image rm ${DOCKER_IMAGE}:latest 2>/dev/null || true &&
+                                docker pull ${DOCKER_IMAGE}:latest &&
+                                docker compose up -d ${SERVICE_NAME} &&
+                                docker image prune -f
+                            '
+                        """
+                    }
+                }
+            }
         }
-      }
     }
-  }
-  post {
-    always {
-      sh 'docker image prune -f || true'
+
+    post {
+        always {
+            cleanWs()
+            sh 'docker image prune -f 2>/dev/null || true'
+        }
+        success { echo "✅ ${SERVICE_NAME} 배포 완료 (${IMAGE_TAG})" }
+        failure { echo "❌ ${SERVICE_NAME} 배포 실패" }
     }
-    success {
-      echo "✅ ${SERVICE_NAME} CI/CD 파이프라인 성공"
-    }
-    failure {
-      echo "❌ ${SERVICE_NAME} CI/CD 파이프라인 실패 - Jenkins 로그를 확인하세요."
-    }
-  }
 }
