@@ -19,7 +19,7 @@ pipeline {
         DOCKER_CREDENTIALS_ID     = "dockerhub-credentials"
 
         DEPLOY_SSH_CREDENTIALS_ID = "ssh-credentials"
-        DEPLOY_HOST               = "app@172.17.1.10"
+        DEPLOY_HOST               = "app@172.17.0.10"
         DEPLOY_PORT               = "35655"
         DEPLOY_DIR                = "/data/apps"
     }
